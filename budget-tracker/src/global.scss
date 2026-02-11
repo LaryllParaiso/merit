@@ -1,0 +1,226 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+/* @import "@ionic/angular/css/palettes/dark.system.css"; */
+
+ion-content {
+  --background: var(--ion-background-color);
+  --padding-top: var(--ion-safe-area-top);
+}
+
+ion-toolbar {
+  --background: var(--app-surface-color);
+  --color: var(--ion-text-color);
+}
+
+ion-title {
+  font-weight: 700;
+}
+
+ion-card {
+  border-radius: var(--app-card-radius);
+  background: var(--app-surface-color);
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
+  margin: 14px 16px;
+}
+
+ion-card,
+ion-item,
+ion-button,
+ion-tab-button::part(native) {
+  transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+}
+
+ion-card:active,
+ion-item:active,
+ion-button:active,
+ion-tab-button::part(native):active {
+  transform: scale(0.99);
+}
+
+ion-item {
+  --background: var(--app-surface-color);
+}
+
+ion-item::part(native) {
+  border-radius: 16px;
+}
+
+ion-list[inset="true"] {
+  background: transparent;
+  margin: 14px 16px;
+}
+
+ion-list[inset="true"] ion-item {
+  margin: 10px 0;
+}
+
+ion-list[inset="true"] ion-item::part(native) {
+  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.05);
+}
+
+ion-item-sliding {
+  margin: 10px 0;
+}
+
+ion-item ion-icon[slot="start"] {
+  background: var(--app-input-bg);
+  border-radius: 14px;
+  padding: 10px;
+}
+
+ion-searchbar {
+  --background: var(--app-input-bg);
+  --border-radius: 999px;
+  --box-shadow: none;
+}
+
+ion-input,
+ion-textarea,
+ion-select {
+  --background: transparent;
+}
+
+ion-button {
+  --border-radius: 16px;
+  text-transform: none;
+  font-weight: 600;
+}
+
+ion-button[disabled] {
+  opacity: 0.55;
+}
+
+ion-segment {
+  --background: transparent;
+}
+
+ion-segment-button {
+  --background: var(--app-input-bg);
+  --background-checked: rgba(var(--ion-color-primary-rgb), 0.14);
+  --color: var(--app-muted-text-color);
+  --color-checked: var(--ion-color-primary);
+  --indicator-color: transparent;
+  border-radius: 999px;
+}
+
+ion-progress-bar {
+  --background: var(--app-border-color);
+  height: 8px;
+}
+
+ion-progress-bar::part(track) {
+  border-radius: 999px;
+}
+
+ion-progress-bar::part(progress) {
+  border-radius: 999px;
+  transition: transform 500ms ease;
+}
+
+ion-fab.page-fab {
+  --offset-x: 16px;
+  --offset-y: calc(84px + var(--ion-safe-area-bottom));
+}
+
+ion-fab-button.app-fab {
+  --background: var(--ion-color-primary);
+  --color: #ffffff;
+  width: 58px;
+  height: 58px;
+  --border-radius: 999px;
+  box-shadow: 0 16px 34px rgba(var(--ion-color-primary-rgb), 0.28);
+}
+
+ion-fab-button.app-fab ion-icon {
+  font-size: 26px;
+}
+
+ion-modal.app-center-modal {
+  --width: min(92vw, 420px);
+  --height: min(78vh, 560px);
+  --max-height: calc(100vh - 180px);
+  --min-height: 260px;
+  --border-radius: 22px;
+  --box-shadow: 0 28px 70px rgba(17, 24, 39, 0.22);
+  --background: transparent;
+}
+
+ion-modal.app-center-modal::part(content) {
+  overflow: hidden;
+  background: transparent;
+}
+
+ion-modal.app-center-modal::part(backdrop) {
+  background: rgba(17, 24, 39, 0.35);
+}
+
+@media (hover: hover) {
+  ion-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 40px rgba(17, 24, 39, 0.08);
+  }
+}
+
+jeep-sqlite {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+ion-router-outlet {
+  pointer-events: none !important;
+}
+
+ion-router-outlet > * {
+  pointer-events: auto !important;
+}
+
+ion-page,
+.ion-page,
+ion-content,
+ion-header,
+ion-toolbar {
+  pointer-events: auto !important;
+}
+
+ion-backdrop.backdrop-hide {
+  pointer-events: none !important;
+}

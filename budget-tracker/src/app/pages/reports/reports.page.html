@@ -1,0 +1,207 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Reports</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="exportCsv()" [disabled]="isLoading || isExporting">
+        <ion-spinner *ngIf="isExporting" name="dots" slot="start"></ion-spinner>
+        Export CSV
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="reports-page">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list inset="true">
+    <ion-item lines="none" class="period-row">
+      <ion-segment [(ngModel)]="period" (ionChange)="onPeriodChange()" [scrollable]="true">
+        <ion-segment-button value="all">
+          <ion-label>All</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="week">
+          <ion-label>Week</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="month">
+          <ion-label>Month</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="custom">
+          <ion-label>Custom</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-item>
+
+    <ion-item *ngIf="period === 'custom'">
+      <ion-label position="stacked">Start date</ion-label>
+      <ion-input type="date" [(ngModel)]="customStartDate"></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="period === 'custom'">
+      <ion-label position="stacked">End date</ion-label>
+      <ion-input type="date" [(ngModel)]="customEndDate"></ion-input>
+    </ion-item>
+
+    <ion-item lines="none" *ngIf="period === 'custom'">
+      <ion-button expand="block" (click)="applyCustomRange()">Apply</ion-button>
+    </ion-item>
+  </ion-list>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Expense Distribution</ion-card-title>
+      <ion-card-subtitle>By category ({{ periodLabel }})</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div *ngIf="isLoading">
+        <ion-skeleton-text animated style="width: 100%; height: 280px"></ion-skeleton-text>
+      </div>
+
+      <div *ngIf="!isLoading && expenseTotals.length === 0" class="empty-state">
+        <ion-text color="medium">
+          <p>No expense data yet. Add some expenses to see the chart.</p>
+        </ion-text>
+      </div>
+
+      <div *ngIf="!isLoading && expenseTotals.length > 0" class="chart-container">
+        <canvas #expensePieCanvas></canvas>
+      </div>
+
+      <ion-list *ngIf="!isLoading && expenseTotals.length > 0" inset="true">
+        <ion-item *ngFor="let r of expenseTotals">
+          <ion-label>{{ r.categoryName }}</ion-label>
+          <ion-note slot="end">
+            {{ getExpensePercent(r.total) | number:'1.0-0' }}% • ₱{{ r.total | number:'1.2-2' }}
+          </ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Income vs Expense</ion-card-title>
+      <ion-card-subtitle>{{ periodLabel }}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div *ngIf="isLoading">
+        <ion-skeleton-text animated style="width: 100%; height: 240px"></ion-skeleton-text>
+      </div>
+
+      <div *ngIf="!isLoading && !hasIncomeExpenseData" class="empty-state">
+        <ion-text color="medium">
+          <p>No data for this period yet.</p>
+        </ion-text>
+      </div>
+
+      <div *ngIf="!isLoading && hasIncomeExpenseData" class="chart-container bar">
+        <canvas #incomeExpenseBarCanvas></canvas>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Spending Trend</ion-card-title>
+      <ion-card-subtitle>{{ period === 'all' ? 'Last 30 days' : periodLabel }}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div *ngIf="isLoading">
+        <ion-skeleton-text animated style="width: 100%; height: 240px"></ion-skeleton-text>
+      </div>
+
+      <div *ngIf="!isLoading && !hasTrendData" class="empty-state">
+        <ion-text color="medium">
+          <p>No spending trend yet. Add expenses to see the chart.</p>
+        </ion-text>
+      </div>
+
+      <div *ngIf="!isLoading && hasTrendData" class="chart-container trend">
+        <canvas #spendingTrendCanvas></canvas>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Summary</ion-card-title>
+      <ion-card-subtitle>{{ period === 'all' ? 'Last 30 days' : periodLabel }}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-note>Total spent</ion-note>
+            <div class="metric">
+              <span *ngIf="!isLoading">₱{{ totalSpent | number:'1.2-2' }}</span>
+              <ion-skeleton-text *ngIf="isLoading" animated style="width: 70%; height: 18px"></ion-skeleton-text>
+            </div>
+          </ion-col>
+          <ion-col size="6" class="ion-text-end">
+            <ion-note>Avg daily</ion-note>
+            <div class="metric">
+              <span *ngIf="!isLoading">₱{{ avgDailySpent | number:'1.2-2' }}</span>
+              <ion-skeleton-text *ngIf="isLoading" animated style="width: 70%; height: 18px"></ion-skeleton-text>
+            </div>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="6">
+            <ion-note>Highest day</ion-note>
+            <div class="metric">
+              <span *ngIf="!isLoading && highestDay">{{ highestDay.date }} • ₱{{ highestDay.total | number:'1.2-2' }}</span>
+              <span *ngIf="!isLoading && !highestDay">—</span>
+              <ion-skeleton-text *ngIf="isLoading" animated style="width: 90%; height: 18px"></ion-skeleton-text>
+            </div>
+          </ion-col>
+          <ion-col size="6" class="ion-text-end">
+            <ion-note>Lowest day</ion-note>
+            <div class="metric">
+              <span *ngIf="!isLoading && lowestDay">{{ lowestDay.date }} • ₱{{ lowestDay.total | number:'1.2-2' }}</span>
+              <span *ngIf="!isLoading && !lowestDay">—</span>
+              <ion-skeleton-text *ngIf="isLoading" animated style="width: 90%; height: 18px"></ion-skeleton-text>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Top Spending Categories</ion-card-title>
+      <ion-card-subtitle>{{ periodLabel }}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list inset="true">
+        <ion-item *ngIf="isLoading">
+          <ion-skeleton-text animated style="width: 95%; height: 18px"></ion-skeleton-text>
+        </ion-item>
+        <ion-item *ngIf="isLoading">
+          <ion-skeleton-text animated style="width: 85%; height: 18px"></ion-skeleton-text>
+        </ion-item>
+
+        <ng-container *ngIf="!isLoading">
+          <ion-item *ngIf="topCategories.length === 0">
+            <ion-label>No data</ion-label>
+          </ion-item>
+
+          <ion-item *ngFor="let r of topCategories">
+            <ion-label>{{ r.categoryName }}</ion-label>
+            <ion-note slot="end">
+              {{ getExpensePercent(r.total) | number:'1.0-0' }}% • ₱{{ r.total | number:'1.2-2' }}
+            </ion-note>
+          </ion-item>
+        </ng-container>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

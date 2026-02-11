@@ -1,0 +1,7 @@
+{
+  "name": "merit",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

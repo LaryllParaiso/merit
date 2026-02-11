@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Merit</string>
+    <string name="title_activity_main">Merit</string>
+    <string name="package_name">com.merit.app</string>
+    <string name="custom_url_scheme">com.merit.app</string>
+</resources>

@@ -1,0 +1,20 @@
+.progress-value {
+  font-size: 32px;
+  font-weight: 850;
+  letter-spacing: -0.4px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stat-row + .stat-row {
+  margin-top: 8px;
+}
+
+.goal-details-page ion-item-divider {
+  --background: transparent;
+  --padding-start: 0;
+}

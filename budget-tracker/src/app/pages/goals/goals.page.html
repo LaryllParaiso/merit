@@ -1,0 +1,137 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Savings Goals</ion-title>
+
+    
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="goals-page" [scrollEvents]="true" (ionScrollStart)="closeSlidingItems()" (click)="closeSlidingItems()">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="page-subtitle">Track your progress</div>
+
+  <div class="section-row">
+    <div class="section-title">Your Goals</div>
+  </div>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-list #goalList lines="none">
+        <ion-item *ngIf="isLoading">
+          <ion-skeleton-text animated style="width: 92%; height: 18px"></ion-skeleton-text>
+        </ion-item>
+        <ion-item *ngIf="isLoading">
+          <ion-skeleton-text animated style="width: 86%; height: 18px"></ion-skeleton-text>
+        </ion-item>
+
+        <ion-item *ngIf="!isLoading && goals.length === 0">
+          <ion-label>No goals yet.</ion-label>
+        </ion-item>
+
+        <ng-container *ngIf="!isLoading">
+          <ion-item-sliding *ngFor="let g of goals; trackBy: trackById">
+            <ion-item button detail="true" class="goal-tile" (click)="openGoal(g)">
+              <ion-icon slot="start" [name]="g.icon || 'flag'"></ion-icon>
+              <ion-label>
+                <h2>
+                  {{ g.name }}
+                  <ion-text *ngIf="g.isCompleted" color="primary"> (Completed)</ion-text>
+                </h2>
+                <p *ngIf="g.targetDate">Target: {{ g.targetDate }}</p>
+                <p>₱{{ g.currentAmount | number:'1.2-2' }} / ₱{{ g.targetAmount | number:'1.2-2' }}</p>
+
+                <ion-progress-bar
+                  class="goal-progress"
+                  [value]="getProgressValue(g)"
+                  [style.--progress-background]="getProgressColor(g)"
+                ></ion-progress-bar>
+              </ion-label>
+
+              <ion-note slot="end" [style.color]="getProgressColor(g)">
+                {{ getProgressPercent(g) | number:'1.0-0' }}%
+              </ion-note>
+            </ion-item>
+
+            <ion-item-options side="end">
+              <ion-item-option color="medium" (click)="editGoal(g)">Edit</ion-item-option>
+              <ion-item-option color="success" (click)="addSavings(g)">Add</ion-item-option>
+              <ion-item-option color="danger" (click)="confirmDelete(g)">Delete</ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ng-container>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab class="page-fab" slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button class="app-fab" (click)="openCreate()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<ion-modal class="app-center-modal create-goal-modal" [isOpen]="isCreateOpen" [backdropDismiss]="true" (didDismiss)="closeCreate()">
+  <ng-template>
+    <ion-content class="goal-modal-content">
+      <form [formGroup]="form">
+        <div class="goal-modal-card">
+          <div class="goal-modal-title">New Savings Goal</div>
+
+          <div class="goal-field">
+            <ion-icon name="create-outline"></ion-icon>
+            <ion-input formControlName="name" placeholder="Goal Name"></ion-input>
+          </div>
+
+          <div class="icon-chooser">
+            <div class="icon-chooser-title">Choose Icon</div>
+            <div class="icon-grid">
+              <button
+                type="button"
+                class="icon-choice"
+                *ngFor="let icon of iconOptions; trackBy: trackByIcon"
+                (click)="selectIcon(icon)"
+                [class.selected]="form.get('icon')?.value === icon"
+              >
+                <ion-icon [name]="icon"></ion-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="goal-field">
+            <ion-icon name="cash-outline"></ion-icon>
+            <ion-input type="number" inputmode="decimal" formControlName="targetAmount" placeholder="Target Amount"></ion-input>
+          </div>
+
+          <div class="goal-field">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <ion-input type="date" formControlName="targetDate"></ion-input>
+          </div>
+
+          <div class="goal-field">
+            <ion-icon name="wallet-outline"></ion-icon>
+            <ion-input type="number" inputmode="decimal" formControlName="currentAmount" placeholder="Initial Savings (Optional)"></ion-input>
+          </div>
+
+          <div class="goal-actions">
+            <ion-button class="goal-cancel" type="button" fill="solid" (click)="closeCreate()">
+              Cancel
+            </ion-button>
+            <ion-button
+              class="goal-save"
+              type="button"
+              fill="solid"
+              (click)="save()"
+              [disabled]="isSaving || form.invalid"
+            >
+              <ion-spinner *ngIf="isSaving" name="dots" slot="start"></ion-spinner>
+              Save
+            </ion-button>
+          </div>
+        </div>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

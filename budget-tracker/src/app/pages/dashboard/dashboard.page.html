@@ -1,0 +1,242 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      <div class="dash-title-wrap">
+        <div class="dash-greeting">Good day! 👋</div>
+        <div class="dash-title">Dashboard</div>
+      </div>
+    </ion-title>
+
+    
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="dashboard">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-card class="balance-card">
+    <ion-card-header>
+      <ion-card-title>Current Balance</ion-card-title>
+      <ion-card-subtitle>Total Income − Total Expenses</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="balance-amount">
+        <span *ngIf="!isLoading">₱{{ balance | number:'1.2-2' }}</span>
+        <ion-skeleton-text *ngIf="isLoading" animated style="width: 60%; height: 28px"></ion-skeleton-text>
+      </div>
+
+      <div class="balance-metrics">
+        <div class="balance-metric income">
+          <div class="metric-icon">
+            <ion-icon name="trending-up-outline"></ion-icon>
+          </div>
+          <div class="metric-text">
+            <div class="metric-label">Income</div>
+            <div class="metric-value">
+              <span *ngIf="!isLoading">₱{{ totalIncome | number:'1.2-2' }}</span>
+              <ion-skeleton-text *ngIf="isLoading" animated style="width: 70px; height: 16px"></ion-skeleton-text>
+            </div>
+          </div>
+        </div>
+
+        <div class="balance-metric expense">
+          <div class="metric-icon">
+            <ion-icon name="trending-down-outline"></ion-icon>
+          </div>
+          <div class="metric-text">
+            <div class="metric-label">Spent</div>
+            <div class="metric-value">
+              <span *ngIf="!isLoading">₱{{ totalExpense | number:'1.2-2' }}</span>
+              <ion-skeleton-text *ngIf="isLoading" animated style="width: 70px; height: 16px"></ion-skeleton-text>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="today-card">
+    <ion-card-content>
+      <div class="today-row">
+        <div class="today-icon">
+          <ion-icon name="flash-outline"></ion-icon>
+        </div>
+        <div class="today-main">
+          <div class="today-label">Today's Spending</div>
+          <div class="today-value">
+            <span *ngIf="!isLoading">₱{{ todayExpense | number:'1.2-2' }}</span>
+            <ion-skeleton-text *ngIf="isLoading" animated style="width: 92px; height: 16px"></ion-skeleton-text>
+            <span class="today-sep" *ngIf="!isLoading">•</span>
+            <span class="today-count" *ngIf="!isLoading">{{ todayCount }} transactions</span>
+          </div>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <div class="section-row">
+    <div class="section-title">Budget Status</div>
+    <ion-button fill="clear" size="small" (click)="goToBudgets()">
+      See all
+      <ion-icon name="chevron-forward" slot="end"></ion-icon>
+    </ion-button>
+  </div>
+
+  <ion-grid class="budget-grid">
+    <ion-row>
+      <ng-container *ngIf="!isLoading">
+        <ion-col size="12" *ngIf="weeklyBudget">
+          <ion-card class="budget-tile" (click)="goToBudgets()">
+            <ion-card-content>
+              <div class="tile-title">
+                <ion-icon class="tile-icon" name="calendar"></ion-icon>
+                <div class="tile-name">Weekly Budget</div>
+              </div>
+
+              <div class="tile-amounts">
+                <strong>₱{{ weeklyBudget.weekSpentAmount | number:'1.0-0' }}</strong>
+                <span class="tile-sep">/</span>
+                <span class="tile-muted">₱{{ weeklyBudget.limitAmount | number:'1.0-0' }}</span>
+              </div>
+
+              <ion-progress-bar
+                class="mini-progress"
+                [value]="getWeeklyBudgetProgressValue()"
+                [style.--progress-background]="getWeeklyBudgetProgressColor()"
+              ></ion-progress-bar>
+
+              <div class="tile-status" [style.color]="getWeeklyBudgetProgressColor()">
+                {{ getWeeklyBudgetPercent() | number:'1.0-0' }}% • {{ getWeeklyBudgetPercent() > 100 ? 'Over budget!' : 'On track' }}
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12" *ngIf="!weeklyBudget">
+          <ion-card class="budget-tile empty" (click)="goToBudgets()">
+            <ion-card-content>
+              <ion-text color="medium">No weekly budget yet</ion-text>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ng-container>
+
+      <ion-col size="6" *ngIf="isLoading">
+        <ion-card class="budget-tile">
+          <ion-card-content>
+            <ion-skeleton-text animated style="width: 100%; height: 96px"></ion-skeleton-text>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6" *ngIf="isLoading">
+        <ion-card class="budget-tile">
+          <ion-card-content>
+            <ion-skeleton-text animated style="width: 100%; height: 96px"></ion-skeleton-text>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div class="section-row">
+    <div class="section-title">Recent Transactions</div>
+    <ion-button fill="clear" size="small" (click)="goToTransactions()">
+      View all
+      <ion-icon name="chevron-forward" slot="end"></ion-icon>
+    </ion-button>
+  </div>
+
+  <ion-list inset="true" class="recent-list" lines="none">
+    <ion-item *ngIf="!isLoading && recentTransactions.length === 0">
+      <ion-label>No transactions yet</ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="isLoading">
+      <ion-skeleton-text animated style="width: 100%; height: 18px"></ion-skeleton-text>
+    </ion-item>
+    <ion-item *ngIf="isLoading">
+      <ion-skeleton-text animated style="width: 92%; height: 18px"></ion-skeleton-text>
+    </ion-item>
+    <ion-item *ngIf="isLoading">
+      <ion-skeleton-text animated style="width: 96%; height: 18px"></ion-skeleton-text>
+    </ion-item>
+
+    <ng-container *ngIf="!isLoading">
+      <ion-item
+        button
+        detail="false"
+        *ngFor="let t of recentTransactions; trackBy: trackById"
+        (click)="openTransaction(t)"
+      >
+        <ion-icon
+          slot="start"
+          [name]="t.categoryIcon || 'pricetag'"
+          [style.color]="t.categoryColor || 'var(--ion-color-medium)'"
+        ></ion-icon>
+        <ion-label>
+          <h3>{{ t.categoryName || 'Unknown' }}</h3>
+          <p>{{ t.date }}</p>
+        </ion-label>
+        <ion-note slot="end" [color]="t.type === 'income' ? 'success' : 'danger'">
+          {{ t.type === 'income' ? '+' : '-' }}₱{{ t.amount | number:'1.2-2' }}
+        </ion-note>
+      </ion-item>
+    </ng-container>
+  </ion-list>
+
+  <div class="section-row">
+    <div class="section-title">Savings Goals</div>
+    <div class="section-actions">
+      
+      <ion-button fill="clear" size="small" (click)="goToGoals()">
+        See all
+        <ion-icon name="chevron-forward" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+
+  <ion-card class="goals-card">
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item *ngIf="!isLoading && goals.length === 0">
+          <ion-label>No goals yet</ion-label>
+        </ion-item>
+
+        <ion-item *ngIf="isLoading">
+          <ion-skeleton-text animated style="width: 100%; height: 18px"></ion-skeleton-text>
+        </ion-item>
+        <ion-item *ngIf="isLoading">
+          <ion-skeleton-text animated style="width: 92%; height: 18px"></ion-skeleton-text>
+        </ion-item>
+
+        <ng-container *ngIf="!isLoading">
+          <ion-item
+            button
+            detail="true"
+            class="goal-tile"
+            *ngFor="let g of goals | slice:0:2; trackBy: trackById"
+            (click)="goToGoals()"
+          >
+            <ion-icon slot="start" [name]="g.icon || 'flag'"></ion-icon>
+            <ion-label>
+              <h3>{{ g.name }}</h3>
+              <p *ngIf="g.targetDate">Target: {{ g.targetDate }}</p>
+              <p>₱{{ g.currentAmount | number:'1.2-2' }} / ₱{{ g.targetAmount | number:'1.2-2' }}</p>
+              <ion-progress-bar
+                class="mini-progress"
+                [value]="getGoalProgressValue(g)"
+                [style.--progress-background]="getGoalProgressColor(g)"
+              ></ion-progress-bar>
+            </ion-label>
+            <ion-note slot="end" [style.color]="getGoalProgressColor(g)">
+              {{ getGoalPercent(g) | number:'1.0-0' }}%
+            </ion-note>
+          </ion-item>
+        </ng-container>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

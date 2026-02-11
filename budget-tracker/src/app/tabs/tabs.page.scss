@@ -1,0 +1,76 @@
+
+ :host {
+  overflow: visible;
+}
+
+ion-tabs {
+  overflow: visible;
+}
+
+ion-tab-bar {
+  --background: var(--app-surface-color);
+  height: 78px;
+  padding: 10px 10px calc(14px + var(--ion-safe-area-bottom));
+  margin: 0 12px calc(18px + var(--ion-safe-area-bottom));
+  border-radius: 26px;
+  overflow: visible;
+  position: relative;
+  z-index: 20;
+  box-shadow: 0 -10px 30px rgba(17, 24, 39, 0.06);
+  border-top: 0;
+}
+
+ion-tab-bar::part(container) {
+  overflow: visible;
+}
+
+ion-tab-bar::part(tabbar) {
+  overflow: visible;
+}
+
+ion-tab-button {
+  --color: var(--app-muted-text-color);
+  --color-selected: var(--ion-color-primary);
+  overflow: visible;
+}
+
+ion-tab-button ion-icon {
+  font-size: 22px;
+}
+
+ion-tab-button ion-label {
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+ion-tab-button::part(native) {
+  border-radius: 18px;
+  padding: 10px 14px;
+}
+
+ion-tab-button.tab-selected::part(native) {
+  background: rgba(var(--ion-color-primary-rgb), 0.12);
+}
+
+ion-tab-button[tab="goals"] {
+  --color: #ffffff;
+  --color-selected: #ffffff;
+  position: relative;
+  z-index: 30;
+}
+
+ion-tab-button[tab="goals"]::part(native) {
+  background: var(--ion-color-primary);
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  margin-top: 0;
+  padding: 0;
+  box-shadow:
+    0 14px 34px rgba(47, 128, 237, 0.35),
+    0 0 0 0 transparent;
+}
+
+ion-tab-button[tab="goals"] ion-icon {
+  font-size: 30px;
+}

@@ -1,0 +1,33 @@
+<ion-content [fullscreen]="true" class="onboarding">
+  <div class="slides-viewport" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+    <div class="slides-track" [style.transform]="'translateX(-' + (index * 100) + '%)'">
+      <div class="slide" *ngFor="let s of slides; let i = index; trackBy: trackByIndex">
+        <div class="slide-hero">
+          <img [src]="s.image" [alt]="s.title" />
+        </div>
+
+        <div class="slide-title">{{ s.title }}</div>
+        <div class="slide-desc">{{ s.description }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="dots">
+      <span
+        class="dot"
+        *ngFor="let _ of slides; let i = index; trackBy: trackByIndex"
+        [class.active]="i === index"
+      ></span>
+    </div>
+
+    <div class="actions" [class.last]="isLast">
+      <ion-button *ngIf="!isLast" fill="clear" class="skip" (click)="skip()">Skip</ion-button>
+
+      <ion-button class="next" (click)="next()">
+        {{ isLast ? 'Get Started' : 'Next' }}
+        <ion-icon name="chevron-forward" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

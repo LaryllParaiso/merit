@@ -1,0 +1,75 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/transactions"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>{{ pageTitle }}</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button class="check-btn" type="button" (click)="save()" [disabled]="isSaving || form.invalid">
+        <ion-spinner *ngIf="isSaving" name="dots"></ion-spinner>
+        <ion-icon *ngIf="!isSaving" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content
+  [fullscreen]="true"
+  class="add-page"
+  [class.income-mode]="isIncome"
+  [class.expense-mode]="!isIncome"
+>
+  <form [formGroup]="form">
+    <ion-list inset="true" class="form-card">
+      <ion-item lines="none" class="type-row">
+        <ion-segment formControlName="type" class="type-segment" mode="ios">
+          <ion-segment-button value="expense">
+            <ion-label>Expense</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="income">
+            <ion-label>Income</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-item>
+
+      <div class="amount-hero" [style.color]="amountColor">
+        ₱
+        <ion-input
+          class="amount-input"
+          type="number"
+          inputmode="decimal"
+          formControlName="amount"
+          placeholder="0.00"
+        ></ion-input>
+      </div>
+
+      <div class="category-label">Category</div>
+      <div class="category-strip" *ngIf="categories.length > 0">
+        <button
+          type="button"
+          class="cat-tile"
+          *ngFor="let c of categories; trackBy: trackByCategoryId"
+          (click)="selectCategory(c)"
+          [class.selected]="form.get('categoryId')?.value === c.id"
+        >
+          <div class="cat-icon" [style.background]="c.color">
+            <ion-icon [name]="c.icon"></ion-icon>
+          </div>
+          <div class="cat-name">{{ c.name }}</div>
+        </button>
+      </div>
+
+      <ion-item lines="none" class="icon-input">
+        <ion-icon slot="start" name="document-text-outline"></ion-icon>
+        <ion-input formControlName="notes" placeholder="Description (optional)"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="icon-input">
+        <ion-icon slot="start" name="calendar-outline"></ion-icon>
+        <ion-input type="date" formControlName="date"></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>

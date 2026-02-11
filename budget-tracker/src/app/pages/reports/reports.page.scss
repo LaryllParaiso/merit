@@ -1,0 +1,51 @@
+
+.chart-container {
+  position: relative;
+  height: 280px;
+}
+
+.chart-container.bar {
+  height: 240px;
+}
+
+.chart-container.trend {
+  height: 240px;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.empty-state {
+  padding: 14px 0;
+  text-align: center;
+}
+
+.reports-page .metric {
+  font-weight: 850;
+  color: rgba(17, 24, 39, 0.92);
+  margin-top: 2px;
+}
+
+.reports-page ion-card ion-list[inset="true"] {
+  margin: 10px 0 0;
+}
+
+.reports-page ion-segment {
+  width: 100%;
+}
+
+.reports-page ion-item.period-row {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+}
+
+.reports-page ion-segment-button {
+  min-width: 104px;
+}
+
+.reports-page ion-segment-button ion-label {
+  white-space: nowrap;
+}

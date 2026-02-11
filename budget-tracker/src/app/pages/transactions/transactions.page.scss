@@ -1,0 +1,225 @@
+
+:host {
+  ion-toolbar ion-button {
+    --border-radius: 999px;
+    --padding-start: 14px;
+    --padding-end: 14px;
+  }
+}
+
+.filter-list {
+  margin-bottom: 6px;
+}
+
+.filter-list ion-item {
+  margin: 0;
+}
+
+.filter-list ion-item::part(native) {
+  box-shadow: none;
+}
+
+.filter-list ion-searchbar {
+  margin-top: 2px;
+}
+
+.tx-list {
+  margin-top: 6px;
+}
+
+.tx-list ion-item h2 {
+  font-weight: 650;
+}
+
+.tx-list ion-note {
+  font-weight: 700;
+}
+
+.tx-list ion-item-divider {
+  --background: transparent;
+  --padding-start: 6px;
+  --padding-end: 6px;
+  margin-top: 10px;
+}
+
+.tx-list ion-item-divider ion-label {
+  font-weight: 650;
+  color: rgba(17, 24, 39, 0.55);
+}
+
+@keyframes txFocusPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 10px 26px rgba(17, 24, 39, 0.05);
+  }
+  45% {
+    transform: scale(1.01);
+    box-shadow: 0 14px 34px rgba(var(--ion-color-primary-rgb), 0.22);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 10px 26px rgba(17, 24, 39, 0.05);
+  }
+}
+
+.tx-list ion-item.tx-focused::part(native) {
+  animation: txFocusPulse 1100ms ease-in-out 0ms 2;
+  background: rgba(var(--ion-color-primary-rgb), 0.08);
+}
+
+.tx-modal-content {
+  --background: transparent;
+}
+
+.tx-modal-card {
+  margin: 18px;
+  padding: 14px 14px 16px;
+  background: var(--app-surface-color);
+  border-radius: 22px;
+  box-shadow: 0 18px 44px rgba(17, 24, 39, 0.10);
+}
+
+.tx-type-row ion-segment {
+  width: 100%;
+  background: rgba(17, 24, 39, 0.05);
+  border-radius: 999px;
+  padding: 6px;
+  margin: 0;
+}
+
+.tx-type-row ion-segment-button {
+  --background: transparent;
+  --indicator-color: transparent;
+  min-height: 44px;
+  border-radius: 999px;
+}
+
+.tx-type-row ion-label {
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.tx-modal-content.expense-mode .tx-type-row ion-segment-button {
+  --background-checked: rgba(var(--ion-color-danger-rgb), 0.12);
+  --color-checked: var(--ion-color-danger);
+}
+
+.tx-modal-content.income-mode .tx-type-row ion-segment-button {
+  --background-checked: rgba(var(--ion-color-secondary-rgb), 0.12);
+  --color-checked: var(--ion-color-secondary);
+}
+
+.tx-amount-hero {
+  margin: 16px 0 6px;
+  font-size: 46px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+}
+
+.tx-amount-input {
+  width: 180px;
+  text-align: left;
+  font-size: 46px;
+  font-weight: 900;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.tx-category-label {
+  margin: 12px 2px 8px;
+  font-size: 13px;
+  font-weight: 750;
+  color: rgba(17, 24, 39, 0.55);
+}
+
+.tx-category-strip {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 6px 2px 10px;
+}
+
+.tx-cat-tile {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 76px;
+}
+
+.tx-cat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.tx-cat-icon ion-icon {
+  font-size: 22px;
+}
+
+.tx-cat-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(17, 24, 39, 0.7);
+  text-align: center;
+}
+
+.tx-cat-tile.selected .tx-cat-icon {
+  box-shadow: 0 0 0 3px rgba(var(--ion-color-primary-rgb), 0.35);
+}
+
+.tx-field {
+  background: rgba(17, 24, 39, 0.04);
+  border-radius: 16px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tx-field ion-icon {
+  color: rgba(17, 24, 39, 0.45);
+  font-size: 18px;
+}
+
+.tx-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.tx-actions ion-button {
+  height: 48px;
+  --border-radius: 999px;
+  font-weight: 750;
+}
+
+.tx-cancel {
+  --background: rgba(17, 24, 39, 0.08);
+  --color: rgba(17, 24, 39, 0.55);
+}
+
+.tx-modal-content.expense-mode .tx-save {
+  --background: rgba(var(--ion-color-danger-rgb), 0.16);
+  --color: var(--ion-color-danger);
+}
+
+.tx-modal-content.income-mode .tx-save {
+  --background: rgba(var(--ion-color-secondary-rgb), 0.16);
+  --color: var(--ion-color-secondary);
+}
